@@ -1,0 +1,23 @@
+name: Create PR from hotfix to develop
+
+on:
+  push:
+    branches:
+      - 'production'
+
+jobs:
+  create_pr:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Create PR
+      if: startsWith(github.ref, 'refs/heads/hotfix/')
+      uses: repo-sync/pull-request@v2
+      with:
+        source_branch: "${{ github.head_ref }}"
+        destination_branch: "develop"
+        pr_title: "Merge hotfix into develop: ${{ github.head_ref }}"
+        pr_body: "This PR merges the hotfix ${{ github.head_ref }} into develop."
+        github_token: ${{ secrets.GITHUB_TOKEN }}
