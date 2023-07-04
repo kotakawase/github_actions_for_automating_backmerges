@@ -16,8 +16,14 @@ jobs:
         uses: actions/checkout@v2
       - name: Create a new branch from the hotfix branch
         run: |
-          git checkout ${{ github.event.pull_request.head.ref }}
-          git checkout -b ${{ github.event.pull_request.head.ref }}-copy
+          git fetch origin ${{ github.event.pull_request.head.ref }}:temp-hotfix-branch
+          git checkout temp-hotfix-branch
+      - name: Rename the temporary branch to a new branch
+        run: |
+          git branch -m ${{ github.event.pull_request.head.ref }}-copy
+      - name: Push the new branch to remote
+        run: |
+          git push -u origin ${{ github.event.pull_request.head.ref }}-copy
       - name: Create PR
         uses: repo-sync/pull-request@v2
         with:
