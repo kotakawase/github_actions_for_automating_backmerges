@@ -14,10 +14,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Create a new branch from the hotfix branch
+        run: |
+          git checkout ${{ github.event.pull_request.head.ref }}
+          git checkout -b ${{ github.event.pull_request.head.ref }}-copy
       - name: Create PR
         uses: repo-sync/pull-request@v2
         with:
-          source_branch: "${{ github.event.pull_request.head.ref }}"
+          source_branch: "${{ github.event.pull_request.head.ref }}-copy"
           destination_branch: "develop"
           pr_title: "Merge hotfix into develop: ${{ github.event.pull_request.head.ref }}"
           pr_body: "This PR merges the hotfix ${{ github.event.pull_request.head.ref }} into develop."
